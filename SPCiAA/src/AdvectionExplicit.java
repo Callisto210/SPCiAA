@@ -5,7 +5,7 @@ public class AdvectionExplicit implements Problem {
     private static final double beta = 1;
     
     private double F(double t) {
-        return Math.cos(2 * Math.PI * t);
+        return 2.0 * Math.PI * Math.cos(2 * Math.PI * t);
     }
 
     @Override
@@ -13,6 +13,14 @@ public class AdvectionExplicit implements Problem {
         return new ABase(v, h, dt, t, barrier) {
             @Override
             Vertex apply(Vertex v) {
+	    	double alpha = (beta * dt)/(2.0 * h);
+	    	v.m_a[1][1] = 1;
+	    	v.m_a[1][2] = 0;
+		v.m_b[1] = 0;
+
+	    	v.m_a[2][1] = 0;
+	    	v.m_a[2][2] = 0.5;
+		v.m_b[2] = v.m_x[2] + alpha*v.m_x[1] + dt*F(t);
                 return v;
             }
         };
@@ -23,6 +31,14 @@ public class AdvectionExplicit implements Problem {
         return new ABase(v, h, dt, t, barrier) {
             @Override
             Vertex apply(Vertex v) {
+	    	double alpha = (beta * dt)/(2.0 * h);
+	    	v.m_a[1][1] = 0.5;
+	    	v.m_a[1][2] = 0;
+		v.m_b[1] = -alpha*v.m_x[2];
+
+	    	v.m_a[2][1] = 0;
+	    	v.m_a[2][2] = 0.5;
+		v.m_b[2] = v.m_x[2] + alpha*v.m_x[1] + dt*F(t);
                 return v;
             }
         };
@@ -33,6 +49,14 @@ public class AdvectionExplicit implements Problem {
         return new ABase(v, h, dt, t, barrier) {
             @Override
             Vertex apply(Vertex v) {
+	    	double alpha = (beta * dt)/(2.0 * h);
+	    	v.m_a[1][1] = 0.5;
+	    	v.m_a[1][2] = 0;
+		v.m_b[1] = -alpha*v.m_x[2];
+
+	    	v.m_a[2][1] = 0;
+	    	v.m_a[2][2] = 1;
+		v.m_b[2] = (1.0-(2.0*alpha))*v.m_x[2] + 2.0*alpha*v.m_x[1] + dt*F(t);
                 return v;
             }
         };
